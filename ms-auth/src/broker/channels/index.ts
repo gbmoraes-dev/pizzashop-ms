@@ -1,5 +1,5 @@
-import { users } from './users.ts'
+import { auth } from './auth.ts'
 
 export const channels = {
-  users,
+  auth,
 }

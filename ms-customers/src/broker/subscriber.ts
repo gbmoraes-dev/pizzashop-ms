@@ -6,7 +6,7 @@ import { db } from '../db/client.ts'
 
 import { customers } from '../db/schemas/customers.ts'
 
-import { users } from './channels/users.ts'
+import { auth } from './channels/auth.ts'
 
 const userCreatedMessageSchema = z.object({
   userId: z.string(),
@@ -17,8 +17,8 @@ const userCreatedMessageSchema = z.object({
   updatedAt: z.string(),
 })
 
-users.consume(
-  'user.created',
+auth.consume(
+  'customers.auth-events.queue',
   async (message) => {
     if (!message) {
       return null
@@ -35,7 +35,7 @@ users.consume(
         `[CONSUMER] Received user with role ${role}, skipping customer creation.`,
       )
 
-      return users.ack(message)
+      return auth.ack(message)
     }
 
     const [customerAlreadyExists] = await db
@@ -48,7 +48,7 @@ users.consume(
       console.warn(
         `[CONSUMER] Client with ID ${userId} already exists. Duplicated message.`,
       )
-      return users.ack(message)
+      return auth.ack(message)
     }
 
     await db.insert(customers).values({
@@ -61,7 +61,7 @@ users.consume(
 
     console.log(`[CONSUMER] Client ${name} inserted with success.`)
 
-    users.ack(message)
+    auth.ack(message)
   },
   {
     noAck: false,

@@ -62,9 +62,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -76,10 +74,7 @@
     "public.user_roles": {
       "name": "user_roles",
       "schema": "public",
-      "values": [
-        "customer",
-        "manager"
-      ]
+      "values": ["customer", "manager"]
     }
   },
   "schemas": {},

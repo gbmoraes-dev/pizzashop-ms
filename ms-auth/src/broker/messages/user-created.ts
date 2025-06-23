@@ -3,5 +3,10 @@ import type { UserCreatedMessage } from '../../../../contracts/messages/user-cre
 import { channels } from '../channels/index.ts'
 
 export function dispatchUserCreated(data: UserCreatedMessage) {
-  channels.users.sendToQueue('user.created', Buffer.from(JSON.stringify(data)))
+  channels.auth.publish(
+    'auth-events',
+    'user.created',
+    Buffer.from(JSON.stringify(data)),
+    { persistent: true },
+  )
 }
