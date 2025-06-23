@@ -1,0 +1,39 @@
+{
+  "name": "ms-customers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file=.env --experimental-strip-types --no-warnings --watch src/http/server.ts",
+    "start": "node --experimental-strip-types --no-warnings src/http/server.ts",
+    "lint": "biome check --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.1",
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "@opentelemetry/api": "^1.9.0",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "amqplib": "^0.10.8",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.44.2",
+    "fastify": "^5.4.0",
+    "fastify-type-provider-zod": "^5.0.1",
+    "pg": "^8.16.2",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.5",
+    "@opentelemetry/auto-instrumentations-node": "^0.60.1",
+    "@opentelemetry/sdk-node": "^0.202.0",
+    "@opentelemetry/sdk-trace-node": "^2.0.1",
+    "@tsconfig/node22": "^22.0.2",
+    "@types/amqplib": "^0.10.7",
+    "@types/node": "^24.0.3",
+    "drizzle-kit": "^0.31.2",
+    "typescript": "^5.8.3"
+  }
+}
