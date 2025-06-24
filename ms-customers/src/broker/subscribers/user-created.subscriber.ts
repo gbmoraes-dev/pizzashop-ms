@@ -51,7 +51,7 @@ channel.consume(
     }
 
     const [customerAlreadyExists] = await db
-      .select()
+      .select({ id: customers.id })
       .from(customers)
       .where(eq(customers.id, userId))
       .limit(1)

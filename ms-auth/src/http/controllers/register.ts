@@ -23,7 +23,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const { name, email, password, role } = registerBodySchema.parse(request.body)
 
   const [emailAlreadyInUse] = await db
-    .select()
+    .select({ email: users.email })
     .from(users)
     .where(eq(users.email, email))
     .limit(1)
