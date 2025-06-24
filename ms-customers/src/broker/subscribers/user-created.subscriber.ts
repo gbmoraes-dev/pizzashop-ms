@@ -2,11 +2,11 @@ import { eq } from 'drizzle-orm'
 
 import { z } from 'zod/v4'
 
-import { db } from '../db/client.ts'
+import { db } from '../../db/client.ts'
 
-import { customers } from '../db/schemas/customers.ts'
+import { customers } from '../../db/schemas/customers.ts'
 
-import { auth } from './channels/auth.ts'
+import { channel } from '../channel.ts'
 
 const userCreatedMessageSchema = z.object({
   userId: z.string(),
@@ -17,8 +17,20 @@ const userCreatedMessageSchema = z.object({
   updatedAt: z.string(),
 })
 
-auth.consume(
-  'customers.auth-events.queue',
+const exchange = 'auth-events'
+
+const queue = 'customers.auth-events.queue'
+
+const routingKey = 'user.created'
+
+await channel.assertExchange(exchange, 'direct', { durable: true })
+
+await channel.assertQueue(queue, { durable: true })
+
+await channel.bindQueue(queue, exchange, routingKey)
+
+channel.consume(
+  queue,
   async (message) => {
     if (!message) {
       return null
@@ -35,7 +47,7 @@ auth.consume(
         `[CONSUMER] Received user with role ${role}, skipping customer creation.`,
       )
 
-      return auth.ack(message)
+      return channel.ack(message)
     }
 
     const [customerAlreadyExists] = await db
@@ -48,7 +60,7 @@ auth.consume(
       console.warn(
         `[CONSUMER] Client with ID ${userId} already exists. Duplicated message.`,
       )
-      return auth.ack(message)
+      return channel.ack(message)
     }
 
     await db.insert(customers).values({
@@ -61,7 +73,7 @@ auth.consume(
 
     console.log(`[CONSUMER] Client ${name} inserted with success.`)
 
-    auth.ack(message)
+    channel.ack(message)
   },
   {
     noAck: false,
